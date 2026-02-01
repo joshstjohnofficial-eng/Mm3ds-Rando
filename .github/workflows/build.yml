@@ -6,18 +6,23 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     steps:
     - name: Checkout repo
       uses: actions/checkout@v4
 
-    - name: Install devkitPro (official method)
+    - name: Install devkitPro (CI-safe)
       run: |
         sudo apt update
         sudo apt install -y ca-certificates gnupg curl
-        curl -fsSL https://apt.devkitpro.org/devkitpro.gpg | sudo gpg --dearmor -o /usr/share/keyrings/devkitpro.gpg
-        echo "deb [signed-by=/usr/share/keyrings/devkitpro.gpg] https://apt.devkitpro.org stable main" | sudo tee /etc/apt/sources.list.d/devkitpro.list
+
+        curl -fsSL https://raw.githubusercontent.com/devkitPro/pacman-packages/master/devkitpro.gpg \
+          | sudo gpg --dearmor -o /usr/share/keyrings/devkitpro.gpg
+
+        echo "deb [signed-by=/usr/share/keyrings/devkitpro.gpg] https://apt.devkitpro.org stable main" \
+          | sudo tee /etc/apt/sources.list.d/devkitpro.list
+
         sudo apt update
         sudo apt install -y devkitARM 3ds-dev 3ds-tools
 
