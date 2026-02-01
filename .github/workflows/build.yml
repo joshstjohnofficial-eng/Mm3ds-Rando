@@ -12,19 +12,17 @@ jobs:
     - name: Checkout repo
       uses: actions/checkout@v4
 
-    - name: Install devkitPro (CI-safe)
+    - name: Install devkitPro via pacman (official)
       run: |
         sudo apt update
-        sudo apt install -y ca-certificates gnupg curl
+        sudo apt install -y wget tar xz-utils
 
-        curl -fsSL https://raw.githubusercontent.com/devkitPro/pacman-packages/master/devkitpro.gpg \
-          | sudo gpg --dearmor -o /usr/share/keyrings/devkitpro.gpg
+        wget https://apt.devkitpro.org/install-devkitpro-pacman
+        chmod +x install-devkitpro-pacman
+        sudo ./install-devkitpro-pacman
 
-        echo "deb [signed-by=/usr/share/keyrings/devkitpro.gpg] https://apt.devkitpro.org stable main" \
-          | sudo tee /etc/apt/sources.list.d/devkitpro.list
-
-        sudo apt update
-        sudo apt install -y devkitARM 3ds-dev 3ds-tools
+        sudo dkp-pacman -Syu --noconfirm
+        sudo dkp-pacman -S --noconfirm devkitARM 3ds-dev 3ds-tools
 
     - name: Build CIA
       run: |
