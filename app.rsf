@@ -1,0 +1,8 @@
+
+BasicInfo:
+  Title : "MM3D Randomizer Manager"
+  ProductCode : "CTR-MM3D-RANDO"
+  UniqueId : 0xFA123
+
+SystemControlInfo:
+  SaveDataSize: 0

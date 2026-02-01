@@ -1,0 +1,1 @@
+Example seed folder. Replace romfs with your randomizer output.
