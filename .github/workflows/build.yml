@@ -1,0 +1,32 @@
+name: Build 3DS CIA
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install devkitPro
+      run: |
+        sudo apt update
+        sudo apt install -y wget
+        wget https://apt.devkitpro.org/install-devkitpro-pacman
+        chmod +x install-devkitpro-pacman
+        sudo ./install-devkitpro-pacman
+        sudo dkp-pacman -S --noconfirm devkitARM 3ds-dev
+
+    - name: Build CIA
+      run: |
+        export DEVKITPRO=/opt/devkitpro
+        export DEVKITARM=/opt/devkitpro/devkitARM
+        make
+
+    - name: Upload CIA
+      uses: actions/upload-artifact@v4
+      with:
+        name: MM3DRandoManager-CIA
+        path: MM3DRandoManager.cia
