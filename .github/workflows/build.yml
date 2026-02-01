@@ -7,17 +7,19 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
 
-    - name: Install devkitPro
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v4
+
+    - name: Install devkitPro (official method)
       run: |
         sudo apt update
-        sudo apt install -y wget
-        wget https://apt.devkitpro.org/install-devkitpro-pacman
-        chmod +x install-devkitpro-pacman
-        sudo ./install-devkitpro-pacman
-        sudo dkp-pacman -S --noconfirm devkitARM 3ds-dev
+        sudo apt install -y ca-certificates gnupg curl
+        curl -fsSL https://apt.devkitpro.org/devkitpro.gpg | sudo gpg --dearmor -o /usr/share/keyrings/devkitpro.gpg
+        echo "deb [signed-by=/usr/share/keyrings/devkitpro.gpg] https://apt.devkitpro.org stable main" | sudo tee /etc/apt/sources.list.d/devkitpro.list
+        sudo apt update
+        sudo apt install -y devkitARM 3ds-dev 3ds-tools
 
     - name: Build CIA
       run: |
@@ -25,7 +27,7 @@ jobs:
         export DEVKITARM=/opt/devkitpro/devkitARM
         make
 
-    - name: Upload CIA
+    - name: Upload CIA artifact
       uses: actions/upload-artifact@v4
       with:
         name: MM3DRandoManager-CIA
